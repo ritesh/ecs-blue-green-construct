@@ -26,6 +26,9 @@ Below is a diagram of the environment we will be building:
 ```
 brew install jq
 npm i -g -f aws-cdk@1.86.0
+cd $HOME && mkdir -p environment && cd environment
+git clone https://github.com/smuralee/ecs-blue-green-construct
+cd $HOME/environment/ecs-blue-green-construct
 ```
 * You have configured AWS CLI using `aws configure`
 * You have the set the `AWS_REGION` within `aws configure`
@@ -43,29 +46,33 @@ npm run test
 ## Deploy the CodeCommit and CodeBuild resources
 
 ```
+cd $HOME/environment/ecs-blue-green-construct
 ./bin/scripts/deploy-container-image-stack.sh
 ```
 
 ## Push the source code to CodeCommit
 * The source code is available [here](https://github.com/smuralee/books-api)
-* The [buildspec.yml](https://github.com/smuralee/books-api/buildspec.yml) has placeholders for the variables and reads the secret for DockerHub login using the SecretsManager
+* The [buildspec.yml](https://github.com/smuralee/books-api/blob/master/buildspec.yml) has placeholders for the variables and reads the secret for DockerHub login using the SecretsManager
+* Navigate out of the `ecs-blue-green-construct` directory and push the source code to `CodeCommit` repository 
 
 ```
+cd $HOME/environment && git clone https://github.com/smuralee/books-api
+cd $HOME/environment/books-api
 export CODE_REPO_URL=$(aws cloudformation describe-stacks --stack-name BlueGreenContainerImageStack --query 'Stacks[*].Outputs[?ExportName==`repositoryCloneUrlHttp`].OutputValue' --output text)
-git clone $CODE_REPO_URL
-cd books
-git add .
-git commit -m "First commit for the API"
-git push
+git remote set-url origin $CODE_REPO_URL
 ```
+* Verify the remote origin - `git remote -v`
+* Push the code - `git push`
 
 ## Deploy the CodePipeline resources
 
 ```
+cd $HOME/environment/ecs-blue-green-construct
 ./bin/scripts/deploy-pipeline-stack.sh
 ```
 
 ## Cleanup
 ```
+cd $HOME/environment/ecs-blue-green-construct
 ./bin/scripts/destroy.sh
 ```
