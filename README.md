@@ -47,8 +47,8 @@ npm run test
 ```
 
 ## Push the source code to CodeCommit
-* The source code is available [here](../apis/books/main.go)
-* The [buildspec.yml](../apis/books/buildspec.yml) has placeholders for the variables and reads the secret for DockerHub login using the SecretsManager
+* The source code is available [here](https://github.com/smuralee/books-api)
+* The [buildspec.yml](https://github.com/smuralee/books-api/buildspec.yml) has placeholders for the variables and reads the secret for DockerHub login using the SecretsManager
 
 ```
 export CODE_REPO_URL=$(aws cloudformation describe-stacks --stack-name BlueGreenContainerImageStack --query 'Stacks[*].Outputs[?ExportName==`repositoryCloneUrlHttp`].OutputValue' --output text)
