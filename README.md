@@ -60,10 +60,9 @@ cd $HOME/environment && git clone https://github.com/smuralee/books-api
 cd $HOME/environment/books-api
 export CODE_REPO_URL=$(aws cloudformation describe-stacks --stack-name BlueGreenContainerImageStack --query 'Stacks[*].Outputs[?ExportName==`repositoryCloneUrlHttp`].OutputValue' --output text)
 git remote set-url origin $CODE_REPO_URL
+git remote -v
+git push
 ```
-* Verify the remote origin - `git remote -v`
-* Push the code - `git push`
-
 ## Deploy the CodePipeline resources
 
 ```
